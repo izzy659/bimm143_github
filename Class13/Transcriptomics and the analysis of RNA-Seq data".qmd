@@ -1,0 +1,324 @@
+---
+title: "Class 13: Transcriptomics/RNA-Seq_data"
+author: "Isabel Philip (A16855684)"
+format: pdf
+---
+
+Today we will analyze the data from a published RNA-seq experiment where airway smooth muscle cells were treated with dexamethasone, a synthetic glucocorticoid steroid with anti-inflammatory effects (Himes et al. 2014).
+
+```{r}
+library(BiocManager)
+library(DESeq2)
+```
+
+# 1. Import countData and colData
+
+There are 2 datasets I need to import/ read/ 
+- `countData` the transcript counts per gene (rows) in the different experiements.
+- `colData` infomration about the columns (i.e. experiments) in `countData`.
+
+```{r}
+counts <- read.csv("airway_scaledcounts.csv", row.names=1)
+metadata <- read.csv("airway_metadata.csv")
+```
+
+Can have a sneak peak with `head()`
+```{r}
+head(counts)
+```
+
+```{r}
+head(metadata)
+```
+
+> Q1. How many genes are in this dataset? 
+
+There are 38694 genes in this data set. 
+
+```{r}
+nrow(counts)
+```
+
+> Q2. How many ‘control’ cell lines do we have?
+
+There are 4 "control" cell lines. 
+
+```{r}
+sum(metadata$dex =="control")
+```
+
+# 2. Toy differential gene expression
+
+```{r}
+control <- metadata[metadata[,"dex"]=="control",]
+control.counts <- counts[ ,control$id]
+control.mean <- rowSums( control.counts )/4 
+#head(control.mean)
+```
+
+OR 
+
+```{r}
+library(dplyr)
+control <- metadata %>% filter(dex=="control")
+control.counts <- counts %>% select(control$id) 
+control.mean <- rowSums(control.counts)/4
+#head(control.mean)
+```
+
+> Q3. How would you make the above code in either approach more robust? Is there a function that could help here? 
+
+rowSums
+
+We can find the average (mean) count values per gene for all the "control" experiments and compare it to the mean values of the "treated". 
+
+- Extract all "control" columns/ experiments from the `counts` data. 
+- Find the mean value for each gene in these columns 
+
+```{r}
+control.inds <- metadata$dex == "control"
+control.count <- counts[ ,control.inds]
+#will give 4 columns from the original data 
+```
+
+```{r}
+dim(control.counts)
+```
+> Mean from the summary of the columns (mean across the rows) - making into one column 
+
+Now find the row wise mean 
+
+```{r}
+control.mean <- rowSums(control.counts)/4
+#dividing by 4 since there are 4 control groups 
+head(control.mean)
+```
+
+> Q4. Follow the same procedure for the `treated` samples (i.e. calculate the mean per gene across drug treated samples and assign to a labeled vector called `treated.mean`)
+
+```{r}
+library(dplyr)
+treat <- metadata %>% filter(dex=="treated")
+treated.counts <- counts %>% select(treat$id) 
+treated.mean <- rowSums(treated.counts)/4
+#head(treated.mean)
+```
+
+OR 
+
+```{r}
+treated.inds <- metadata$dex == "treated"
+treated.count <- counts[ ,treated.inds]
+treated.mean <- rowSums(treated.counts)/ncol(treated.counts)
+head(treated.mean)
+```
+
+Have hardcorded "4" - another way to write that will account for the number of control groups, regardless of number 
+```{r}
+control.mean <- rowSums(control.counts)/ncol(control.counts)
+head(control.mean)
+```
+
+
+For book keeping purposes, will combine the meancount data
+```{r}
+meancounts <- data.frame(control.mean, treated.mean)
+#will show two columns 
+```
+
+> Q5 (a). Create a scatter plot showing the mean of the treated samples against the mean of the control samples. Your plot should look something like the following.
+
+```{r}
+library(ggplot2)
+ggplot(meancounts) +
+  aes(control.mean, treated.mean)+
+  geom_point(alpha=0.3)
+```
+
+```{r}
+plot(meancounts)
+```
+> Q5 (b).You could also use the ggplot2 package to make this figure producing the plot below. What geom_?() function would you use for this plot?
+
+Geom_point()
+
+Whenever we see data that is so heavily skewed, like this, we often transform it to log to see what is going on more easily. 
+
+> Q6. Try plotting both axes on a log scale. What is the argument to plot() that allows you to do this?
+
+log
+
+```{r}
+plot(log(meancounts))
+```
+
+We most often work in log2 units as this makes math easier. Let's have a play to see this. 
+
+```{r}
+# treated / control
+log2(20/20)
+#log2 of 1 is 0, therefore if there is a log2 change of 0 - there was no change 
+```
+
+```{r}
+log2(40/20)
+# going to have a log2 change of 1 
+```
+
+```{r}
+log2(80/20)
+# going to have a log 2 change of 2 
+```
+
+```{r}
+#treated/ control
+log2(20/40)
+# half as much treated as there is control, going into negatives
+# sign of the value tells which direction 
+# 0 = on the line 
+# positive = above the line 
+# negative = below the line 
+```
+
+Let's add "log2 fold-change" to our `meancounts` dataset. 
+
+```{r}
+meancounts$log2fc <- log2(meancounts$treated.mean / meancounts$control.mean)
+```
+
+There are a couple of “weird” results. Namely, the NaN (“not a number”) and -Inf (negative infinity) results. The NaN is returned when you divide by zero and try to take the log. The -Inf is returned when you try to take the log of zero. It turns out that there are a lot of genes with zero expression. 
+
+Let’s filter out zero count genes - i.e. remove the rows (genes) that have a 0 value in either control or treated means. 
+
+How many genes are "up" regulated at the common log2 fold change threshold of 2+? 
+
+```{r}
+up.inds <- meancounts$log2fc >= 2
+sum(up.inds, na.rm = T)
+```
+
+How many genes are "down" regulated at the threshold of -2? 
+
+```{r}
+down.inds <- meancounts$log2fc >= -2
+sum(down.inds, na.rm = T)
+```
+
+> Q7. What is the purpose of the arr.ind argument in the which() function call below? Why would we then take the first column of the output and need to call the unique() function?
+
+The purpose of the `arr.ind` argument in the which() function is being called is to return the row and column positions where it is `TRUE`. This will tell which genes (rows) and samples (columns) have 0 counts. The goal is to remove/ ignore any genes with 0 counts in any of the samples so we can just focus on the row answer. The `unique()` is being called to ensure that no row is being counted twice if it has 0 entries in both samples. 
+
+
+```{r}
+zero.vals <- which(meancounts[,1:2]==0, arr.ind=TRUE)
+
+to.rm <- unique(zero.vals[,1])
+mycounts <- meancounts[-to.rm,]
+head(mycounts)
+```
+> Q8. Using the up.ind vector above can you determine how many up regulated genes we have at the greater than 2 fc level? 
+
+250
+
+> Q9. Using the down.ind vector above can you determine how many down regulated genes we have at the greater than 2 fc level?
+
+367
+
+```{r}
+up.ind <- mycounts$log2fc > 2
+down.ind <- mycounts$log2fc < (-2)
+sum(up.ind)
+sum(down.ind)
+```
+
+> Q10. Do you trust these results? Why or why not?
+
+These results cannot be fully trusted as we did not filter out significant from non-significant results. Fold-change can pear large without statistical significance, and therefore affect the results. Since we haven't looked at significance, the results can be misleading. 
+
+# Setting up for DESeq/ DESeq Analysis 
+
+To do this the right way, we need to consider statistical significance of the differences - not just their magnitude. 
+
+```{r}
+#/ message: false
+library(DESeq2)
+```
+
+To use this package, it wants `countData` and `colData` in a specific format
+
+```{r}
+dds <- DESeqDataSetFromMatrix(countData=counts, 
+                              colData=metadata, 
+                              design=~dex)
+dds
+```
+
+```{r}
+dds <- DESeq(dds)
+```
+
+Extract my results 
+```{r}
+res <- results(dds)
+head(res)
+```
+
+> padj = p value adjusted 
+
+Plot of Fold Change vs. P-Value (adjusted for multiple testing)
+```{r}
+plot(res$log2FoldChange, res$padj)
+```
+> fold change of 0 = no change, negative = downregulated, positive = up regulated
+
+> the higher the p-value = the less significant it is 
+WE WANT SMALL P-VALUES (downwards values)
+
+Take the log of the P-Value 
+```{r}
+plot(res$log2FoldChange, log(res$padj))
+```
+> In this plot, look down the axis. 
+
+```{r}
+log(0.01)
+```
+```{r}
+log(0.00000001)
+```
+> the smaller the p-value, the higher the negative number = greater significance 
+
+
+We can flip the y-axis by putting a minus sign on it 
+```{r}
+plot(res$log2FoldChange, -log(res$padj), 
+     xlab = "Log2 Fold-Change", 
+     ylab = "-log(P-value")
+```
+> standard volcano plot 
+
+Let's save our work to date
+```{r}
+write.csv(res, file = "myresults.csv")
+```
+
+To finish off, let's make a nicer volcano plot. Use ggplot.
+- Add the log2 threshold lines of +2/-2
+- Add P-value threshold lines at 0.05, 
+- Add color to highlight the subset of genes that meet both of the above thresholds. 
+
+```{r}
+mycols <- rep("gray", nrow(res))
+mycols[res$log2FoldChange >= 2] <- "red"
+mycols[res$log2FoldChange <= -2] <- "blue"
+mycols[res$padj > 0.05] <- "gray"
+```
+
+
+```{r}
+ggplot(res) +
+  aes(log2FoldChange, -log(padj))+
+  geom_point(col=mycols) +
+  geom_vline(xintercept = c(-2,2), col="red") +
+  geom_hline(yintercept = 0.05, col="blue")
+```

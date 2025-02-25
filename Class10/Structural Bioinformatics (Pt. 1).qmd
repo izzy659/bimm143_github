@@ -1,0 +1,95 @@
+---
+title: "Class 10 : Structural Bioinformatics (Pt. 1)"
+author: "Isabel Philip (A16855684)"
+format: html
+---
+**Table of contents**
+
+1. PDB database.................................................................. 1
+2. Using mol*........................................................................  4
+3. Introduction to Bio3D in R...............................................8
+4. predicting functional dynamics 12.................................12
+
+**1. PDB database**
+
+The main repository of biomolecular structior data is called the pdb found at: https://www.rcsb.org/
+Let’s see what this database contains. PDB analyze >PDB statistics > by Experimental Method and Molecular Type
+```{r}
+pdbstats <- read.csv("Data Export Summary.csv")
+pdbstats
+```
+commas result in numerical values being categorized as a character
+
+```{r}
+pdbstats$X.ray
+```
+This can be fixed by replacing “,” for nothing “ ” with sub() function:
+```{r}
+x <- pdbstats$X.ray
+x_numeric <- as.numeric( gsub(",", "", x))
+x_numeric
+```
+or I can use the readr package and the read_csv() function
+
+```{r}
+library(readr)
+pdbstats <- read_csv("Data Export Summary.csv", show_col_types = FALSE)
+pdbstats
+```
+
+I want to clean the column names so that they are all lower case and don’t have spaces in them
+
+```{r}
+colnames(pdbstats)
+```
+
+```{r}
+library(janitor)
+```
+
+```{r}
+df <- clean_names(pdbstats)
+df
+```
+```{r}
+sum(df$x_ray)
+```
+```{r}
+df$total
+```
+
+> Q1: What percentage of structures in the PDB are solved by X-Ray and Electron
+Microscopy?
+
+93.58566%
+Percent of X-ray structures
+
+```{r}
+sum(df$x_ray)/sum(df$total) *100
+```
+Percent of EM structure
+```{r}
+sum(df$em)/sum(df$total) *100
+```
+> Q2: What proportion of structures in the PDB are protein?
+
+86.23852
+```{r}
+protein_row <- df[df$molecular_type =="Protein (only)",]
+protein_row
+```
+
+```{r}
+sum(protein_row$total) / sum(df$total) * 100
+```
+
+> Q3: Type HIV in the PDB website search box on the home page and determine
+how many HIV-1 protease structures are in the current PDB?
+
+2,298 structures are currently in the pdb.
+
+**2. Using mol**
+The main mol* homepage: https://molstar.org/viewer/ We can input our own PDB files or just give it a PDB database accession code (4 letter PDB code)
+
+
+

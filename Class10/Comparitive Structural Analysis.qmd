@@ -1,0 +1,96 @@
+---
+title: "Section 4 - Comparitive Structural Analysis Pt.1"
+author: "Isabel Philip (A16855684)"
+format: pdf
+---
+
+Here we run through s complete "pipeline" of structural analysis that begins with a single seqeunce idenitifer and ends in a PCA analysis. 
+
+```{r}
+library(bio3d)
+```
+
+## Step 1. Get a sequence 
+Step 1: Create a sequence for the protein we are interested in. 
+We will take ADK "1ake_A"
+
+```{r}
+id <- "1ake_A"
+aa <- get.seq(id)
+aa
+```
+
+## Step 2. Run a Blast Search 
+Run a BLAST search of the PDB for all related seqeunces to our input `aa`
+
+```{r}
+#blast <- blast.pdb(aa)
+```
+
+```{r}
+#hits <- plot(blast)
+```
+
+```{r}
+hits <- NULL
+hits$pdb.id <- c('1AKE_A','6S36_A','6RZE_A','3HPR_A','1E4V_A','5EJE_A','1E4Y_A','3X2S_A','6HAP_A','6HAM_A','4K46_A','3GMT_A','4PZL_A')
+```
+
+
+## Step 3. Download Structures 
+These are the top hit (18) - i.e. all the structures in the PDB database related to our input sequence. 
+
+```{r}
+hits$pdb.id
+```
+
+```{r}
+# Download releated PDB files
+files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
+```
+
+## Step 4. Align and Sequence 
+
+```{r}
+# Align releated PDBs
+pdbs <- pdbaln(files, fit = TRUE, exefile="msa")
+```
+
+```{r}
+pdbs
+```
+
+## Step 5. PCA 
+
+Let's use our old friend PCA to make sense of these confusing, complicated structure relationships. 
+
+```{r}
+pc <- pca(pdbs)
+plot(pc)
+```
+> showing there's 3 different clusters/ conformations 
+
+Let's make a trajectory (or movie) of the main conformational changes captured by PC1. We will use the `mktrj()` function for this...
+
+```{r}
+mktrj(pc, file ="pca_result.pdb")
+```
+
+> Upload file into molstar.org/viewer/ and see through playing video. Easier to view/ understand 
+
+
+## Back of the Envelope Comparison of the PDB size to UniProt
+
+```{r}
+uniprot <- 253206171
+pdb <- 231029
+pdb/uniprot *100
+```
+
+
+
+
+
+
+
+

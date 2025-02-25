@@ -1,0 +1,58 @@
+---
+title: "Class 11"
+author: "Isabel Philip (A16855684)"
+format: pdf
+---
+
+Here we analyze our AlphaFold structure prediction models. The input directory/ folder comes from the ColabFold server: 
+> for our gene project 
+
+```{r}
+# Change this for YOUR results dir name
+results_dir <- "HIVPr_94b5b"
+```
+
+```{r}
+# File names for all PDB models
+pdb_files <- list.files(path=results_dir,
+                        pattern="*.pdb",
+                        full.names = TRUE)
+
+# Print our PDB file names
+basename(pdb_files)
+```
+
+I will use the Bio3D pacakge for analysis 
+```{r}
+library(bio3d)
+```
+
+```{r}
+# Read all data from Models 
+#  and superpose/fit coords
+pdbs <- pdbaln(pdb_files, fit=TRUE, exefile="msa")
+pdbs
+```
+
+A quick
+```{r}
+pc <- pca(pdbs)
+plot(pc)
+```
+
+
+##RMSD analysis
+RMSD is a common measure of structural distance used in structural biology. 
+```{r}
+rd <- rmsd(pdbs, fit=T)
+rd
+```
+
+```{r}
+library(pheatmap)
+
+colnames(rd) <- paste0("m",1:5)
+rownames(rd) <- paste0("m",1:5)
+pheatmap(rd)
+```
+

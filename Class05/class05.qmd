@@ -1,0 +1,212 @@
+---
+title: "Class 5: Data Viz with ggplot"
+author: "Isabel Philip (A16855684)"
+format: pdf
+---
+
+## Intro to ggplot
+
+There are many graphics systems in R (ways to make plots and figures).These include "base" R plots. Today we will focus mostly on the **ggplot2** package. 
+
+> Q1. For which phases is data visualization important in our scientific workflows? 
+
+>All of the above
+
+> Q2. True or False? The ggplot2 package comes already installed with R? 
+
+>False
+
+>Q3. Which plot types are typically NOT used to compare distributions of numeric variables? 
+
+>Network graphs 
+
+>Q4. Which statement about data visualization with ggplot2 is **incorrect**? 
+
+>ggplot2 is the only way to create plots in R
+
+Let's start with a plot of a simple in-built data set called `cars`. 
+
+```{r}
+cars
+```
+
+```{r}
+plot(cars)
+```
+
+Let's see how you can make this figure using **ggplot**. First, I need to install this package on my computer. To install any R package, I use the function `install.packages()`. 
+
+> I will run `install.packages("ggplot2") in my R console, not in this quarto document!
+
+Before I can use any function from add on packages, I need to load the package from my "library()" with the `library(ggplot2)` function call. 
+
+```{r}
+library(ggplot2)
+ggplot(cars)
+```
+
+All ggplot figures have at least 3 things (called layers). These include:
+
+- **data** (the input data set I want to plot from)
+- **aes** (the aesthetic mapping of the data to my plot)
+- **geoms** (the geom_point(), geom_line(), etc. that I want to draw)
+
+```{r}
+ggplot(cars) + 
+  aes(x=speed, y=dist) +
+  geom_point()
+```
+
+Let's add a line to show the relationship here:
+
+```{r}
+ggplot(cars) + 
+  aes(x=speed, y=dist) +
+  geom_point() +
+  geom_smooth(method="lm") +
+  theme_bw() +
+  labs(title="My first GGPLOT")
+```
+
+>Q5. Which geometric layer should be used to create scatter plots in ggplot2? 
+
+>geom_point()
+
+## Gene Expression Figure
+
+The code to read the data set
+
+```{r}
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+```
+> Q6. Use the nrow() function to find out how many genes are in this dataset. What is your answer? 
+
+```{r}
+nrow(genes)
+```
+> Q7. How many columns did you find?
+
+```{r}
+ncol(genes)
+```
+>Q8. Use the table() function on the State column of this data.frame to find out how many ‘up’ regulated genes there are. What is your answer?
+
+```{r}
+table(genes$State)
+```
+
+>127
+
+> Q9. Using your values, above and 2 significant figures, what fraction of total genes is up-regulated in this dataset? 
+
+```{r}
+round(table(genes$State)/nrow(genes),4)
+```
+
+```{r}
+n.tot <- nrow(genes)
+vals <- table(genes$State)
+
+vals.percent <- vals/n.tot * 100
+round(vals.percent, 2)
+```
+
+>2.44
+
+
+A first plot of this 
+```{r}
+ggplot(genes) +
+  aes(x=Condition1, y=Condition2, col=State) +
+  geom_point() +
+  labs(title="Gene Expression Changes Upon Drug Treatment", 
+       x="Control Expression", 
+       y= "Drug Prescence Expression")+
+  scale_color_manual( values=c("blue","gray","red") ) +
+  theme_bw()
+```
+
+## Going Further
+```{r}
+library(gapminder)
+
+library(dplyr)
+
+gapminder_2007 <- gapminder %>% filter(year==2007)
+```
+
+Plot for 2007
+```{r}
+ggplot(gapminder_2007) +
+  aes(x=gdpPercap, y=lifeExp) +
+  geom_point()
+```
+
+
+```{r}
+ggplot(gapminder_2007) +
+  aes(x=gdpPercap, y=lifeExp, color=continent, size=pop) +
+  geom_point(alpha=0.4)
+```
+
+```{r}
+ggplot(gapminder_2007) + 
+  aes(x = gdpPercap, y = lifeExp, color = pop) +
+  geom_point(alpha=0.8)
+```
+
+```{r}
+ggplot(gapminder_2007) +
+  aes(x=gdpPercap, y=lifeExp, size=pop) +
+  geom_point(alpha=0.4)
+  scale_size_area(max_size = 10)
+```
+Can you adapt the code you have learned thus far to reproduce our gapminder scatter plot for the year 1957? What do you notice about this plot is it easy to compare with the one for 2007?
+
+```{r}
+library(gapminder)
+gapminder_1957 <- gapminder %>% filter(year==1957)
+```
+
+```{r}
+ggplot(gapminder_1957) +
+  aes(x=gdpPercap, y=lifeExp, color=continent, size=pop) +
+  geom_point(alpha=0.7)
+  scale_size_area(max_size = 15)
+```
+
+```{r}
+ggplot(gapminder_1957) + 
+  geom_point(aes(x = gdpPercap, y = lifeExp, color=continent,
+                 size = pop), alpha=0.7) + 
+  scale_size_area(max_size = 10) +
+  facet_wrap(~year)
+```
+
+## Combining Plots
+```{r}
+library(patchwork)
+```
+
+Example plots:
+```{r}
+p1 <- ggplot(mtcars) + aes(mpg,disp) + geom_point()
+```
+
+```{r}
+p1
+```
+
+```{r}
+p1 <- ggplot(mtcars) + aes(mpg,disp) + geom_point()
+p2 <- ggplot(mtcars) + aes(gear, disp, group = gear) + geom_boxplot()
+p3 <- ggplot(mtcars) + aes(disp, qsec) + geom_smooth()
+p4 <- ggplot(mtcars) +aes(carb) + geom_bar()
+```
+
+Patchwork Combines all Graphs: 
+```{r}
+(p1 | p2) / (p3 | p4)
+```

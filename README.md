@@ -12,3 +12,25 @@ This repo is for my UCSD bioinformatics class.
 - Class07 [Introduction to Machine Learning for Bioinformatics Pt.1](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class07/Class7.html)
 
 - Class08 [Unsupervised learning mini-project](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class08/Class_08.html)
+
+- Class09 [Halloween Candy Mini-Project](https://htmlpreview.github.io/?)
+
+- Class10 [Structural Bioinformatics (pt1)](https://htmlpreview.github.io/?)
+
+- Class11 [Structural Bioinformatics (pt2 AlphaFold)](https://htmlpreview.github.io/?)
+
+- Class12 [Genome informatics and high throughput sequencing](https://htmlpreview.github.io/?)
+
+- Class13 [Transcriptomics, RNA-Seq analysis, and the interpretation of gene lists](https://htmlpreview.github.io/?)
+
+- Class14 [RNA-Seq mini project](https://htmlpreview.github.io/?)
+
+- Class15 [Hands-on with Git and GitHub](https://htmlpreview.github.io/?)
+
+- Class16 [Essential UNIX for bioinformatics](https://htmlpreview.github.io/?)
+
+- Class17 [Analyzing sequencing data in the cloud](https://htmlpreview.github.io/?)
+
+- Class18 [Investigating pertussis resurgence mini project](https://htmlpreview.github.io/?)
+
+- Class19 [Mini Project: Cancer Mutation Analysis(pt1)](https://htmlpreview.github.io/?)

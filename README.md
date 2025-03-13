@@ -15,7 +15,7 @@ This repo is for my UCSD bioinformatics class.
 
 - Class09 [Halloween Candy Mini-Project](https://htmlpreview.github.io/?)
 
-- Class10 [Structural Bioinformatics (pt1)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class10/Structural%20Bioinformatics%20(Pt.%201).html)
+- Class10 [Structural Bioinformatics (pt1)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class10/Comparitive%20Structural%20Analysis.html)
 
 - Class11 [Structural Bioinformatics (pt2 AlphaFold)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class11/Class%2011_%20HW.html)
 

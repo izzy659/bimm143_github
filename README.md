@@ -5,7 +5,7 @@ This repo is for my UCSD bioinformatics class.
 
 - Class 04 [Introduction to R]()
   
-- Class 05 [Data viz with ggplot](https://github.com/izzy659/bimm143_github/blob/main/Class05/class05.pdf)
+- Class 05 [Data viz with ggplot](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class05/class05.html)
 
 - Class 06 [R Functions]()
 

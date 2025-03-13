@@ -15,13 +15,13 @@ This repo is for my UCSD bioinformatics class.
 
 - Class09 [Halloween Candy Mini-Project](https://htmlpreview.github.io/?)
 
-- Class10 [Structural Bioinformatics (pt1)](https://htmlpreview.github.io/?)
+- Class10 [Structural Bioinformatics (pt1)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class10/Structural%20Bioinformatics%20(Pt.%201).html)
 
-- Class11 [Structural Bioinformatics (pt2 AlphaFold)](https://htmlpreview.github.io/?)
+- Class11 [Structural Bioinformatics (pt2 AlphaFold)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class11/Class%2011_%20HW.html)
 
-- Class12 [Genome informatics and high throughput sequencing](https://htmlpreview.github.io/?)
+- Class12 [Genome informatics and high throughput sequencing](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class12/class12.html)
 
-- Class13 [Transcriptomics, RNA-Seq analysis, and the interpretation of gene lists](https://htmlpreview.github.io/?)
+- Class13 [Transcriptomics, RNA-Seq analysis, and the interpretation of gene lists](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class13/Transcriptomics%20and%20the%20analysis%20of%20RNA-Seq%20data%22.html)
 
 - Class14 [RNA-Seq mini project](https://htmlpreview.github.io/?)
 

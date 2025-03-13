@@ -3,7 +3,7 @@
 My classwork from W25 [BIMM143](https://bioboot.github.io/bimm143_W25/) at UC San Diego 
 This repo is for my UCSD bioinformatics class. 
 
-- Class 04 [Introduction to R]()
+- Class 04 [Introduction to R](https://htmlpreview.github.io/https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class04/Class4.html)
   
 - Class 05 [Data viz with ggplot](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class05/class05.html)
 

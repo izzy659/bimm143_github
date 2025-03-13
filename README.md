@@ -22,15 +22,3 @@ This repo is for my UCSD bioinformatics class.
 - Class12 [Genome informatics and high throughput sequencing](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class12/class12.html)
 
 - Class13 [Transcriptomics, RNA-Seq analysis, and the interpretation of gene lists](https://htmlpreview.github.io/?https://raw.githubusercontent.com/izzy659/bimm143_github/refs/heads/main/Class13/Transcriptomics%20and%20the%20analysis%20of%20RNA-Seq%20data%22.html)
-
-- Class14 [RNA-Seq mini project](https://htmlpreview.github.io/?)
-
-- Class15 [Hands-on with Git and GitHub](https://htmlpreview.github.io/?)
-
-- Class16 [Essential UNIX for bioinformatics](https://htmlpreview.github.io/?)
-
-- Class17 [Analyzing sequencing data in the cloud](https://htmlpreview.github.io/?)
-
-- Class18 [Investigating pertussis resurgence mini project](https://htmlpreview.github.io/?)
-
-- Class19 [Mini Project: Cancer Mutation Analysis(pt1)](https://htmlpreview.github.io/?)
